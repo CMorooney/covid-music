@@ -2,3 +2,8 @@ Stuck At Home
 
 basic protein -> midi idea http://whozoo.org/mac/Music/Primer/Primer_index.htm
 python -> midi library https://midiutil.readthedocs.io/en/latest/
+
+**UP FOR GRABS**
+* add a track for drums (and midi notes lookup)
+* duplicating sequential notes should be one long sustaining note
+* add more scales/modes
