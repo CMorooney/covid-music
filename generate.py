@@ -16,18 +16,22 @@ P_SURFACE_GLYCO = "data/surface_glycoprotein_QIB84673_1"
 #middle-c to b
 notes = { 'c':60, 'c#':61, 'd':62, 'd#':63, 'e':64, 'f':65, 'f#':66, 'g':67, 'g#':68, 'a':69, 'a#':70, 'b':71 }
 rGroups = ['A', 'C', 'D', 'E', 'F','G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
-fMinor = [notes['f'], notes['g'], notes['g#'], notes['a#'], notes['c'], notes['c#'], notes['d#']]
 
-track    = 0
+fMinor = [notes['f'], notes['g'], notes['g#'], notes['a#'], notes['c'], notes['c#'], notes['d#']]
+drums = [ 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47 ]
+
+sequencerTrack    = 0
+drumTrack = 1
 channel  = 0
 time     = 0   # In beats
 duration = .5   # In quarter beats
 tempo    = 145  # In BPM
 volume   = 100 # 0-127, as per the MIDI standard
 
-MyMIDI = MIDIFile(1) # One track, defaults to format 1 (tempo track
+MyMIDI = MIDIFile(2) # One track, defaults to format 1 (tempo track
                      # automatically created)
-MyMIDI.addTempo(track, time, tempo)
+MyMIDI.addTempo(sequencerTrack, time, tempo)
+MyMIDI.addTempo(drumTrack, time, tempo)
 
 def parseProtein(proteinFilePath):
   with open(proteinFilePath) as f:
@@ -44,15 +48,25 @@ def parseCharacter(character):
 
 def writeNote(rGroup, scale):
   index = rGroups.index(rGroup)
+
   note = 0
+  drum = 0 
+
   scaleLength = len(scale)
+  drumLength = len(drums)
 
   if(index < scaleLength):
-   note = fMinor[index]
+    note = fMinor[index]    
   else:
     note = fMinor[index % scaleLength]
 
-  MyMIDI.addNote(track, channel, note, time, duration, volume) 
+  if(index < drumLength):
+    drum = drums[index]
+  else:
+    drum = drums[index % drumLength]
+
+  MyMIDI.addNote(sequencerTrack, channel, note, time, duration, volume) 
+  MyMIDI.addNote(drumTrack, channel, drum, time, duration, volume) 
 
   global time
   time = time + .5 
